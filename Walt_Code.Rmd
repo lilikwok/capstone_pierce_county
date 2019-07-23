@@ -127,6 +127,10 @@ master[is.na(master['Utility_Water']),'Utility_Water'] <- '2'
 master[is.na(master['Utility_Electric']),'Utility_Electric'] <- '2'
 ```
 
+```{r}
+master <- master %>%
+  select(-Utility_Sewer,-Utility_Water,-Utility_Electric)
+```
 
 ```{r}
 summary(master)
@@ -136,7 +140,7 @@ summary(master)
 ```{r}
 
 categorical <- master %>%
-  select(Utility_Electric, Utility_Sewer, Utility_Water, View_Quality,Waterfront_Type, 
+  select(View_Quality,Waterfront_Type, 
          near_firestation, near_healthcare, near_libraries, near_policestation, near_waterplants,
          near_schools, withInSewerImprovement, condition,  quality,attic_finished_square_feet,basement_square_feet,porch_square_feet,attached_garage_square_feet,detached_garage_square_feet)
 Numeric <- master %>%
