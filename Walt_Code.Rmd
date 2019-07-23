@@ -1,0 +1,85 @@
+---
+title: "Capstone EDA/Cleaning"
+author: "Walt Ames"
+date: "7/22/2019"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(dplyr)
+```
+
+```{r}
+master <- read_csv("master.csv")
+improvement <- read_csv("full_improvement_update.csv")
+```
+
+```{r}
+master <- master %>% left_join(improvement, by = "Parcel_Number")
+```
+
+
+```{r}
+master <- master %>% filter(percent_complete >= 1.0)
+```
+
+```{r}
+master <- master %>% select(-c(Appraisal_Date, percent_complete, X1.x, X1.y, row_num))
+```
+
+```{r}
+master <- master %>% filter(between(sale_price, 20000, 705000),
+                            (between(Land_Net_Acres, .05, 10)),
+                             (between(square_feet, 190, 5000)),
+                            bedrooms <= 6,
+                            between(bathrooms, 1, 5),
+                            between(stories, 1, 5))
+                          
+```
+
+
+```{r}
+skim(master)
+```
+
+```{r}
+summary(master)
+```
+
+```{r}
+master <- master %>%
+      mutate(withInSewerImprovement = ifelse(withInSewerImprovement == "N",0,1)) %>%
+      mutate(near_firestation = ifelse(near_firestation == "N",0,1)) %>%
+      mutate(near_healthcare = ifelse(near_healthcare == "N",0,1)) %>%
+      mutate(near_libraries = ifelse(near_libraries == "N",0,1)) %>%
+      mutate(near_policestation = ifelse(near_policestation == "N",0,1)) %>%
+      mutate(near_schools = ifelse(near_schools == "N",0,1)) %>%
+      mutate(near_waterplants = ifelse(near_waterplants == "N",0,1))
+```
+
+
+```{r}
+test <- master %>% select(sale_price, year_built, Land_Net_Acres, square_feet, fireplaces, stories, bathrooms, bedrooms, condition, quality)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
