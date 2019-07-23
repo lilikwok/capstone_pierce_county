@@ -5,6 +5,7 @@ date: "7/22/2019"
 output: html_document
 ---
 
+
 ```{r}
 
 rm(list = ls(all = TRUE)) 
@@ -17,6 +18,7 @@ if(is.null(sessionInfo()$otherPkgs) == FALSE)lapply(paste("package:", names(sess
 library(tidyverse)
 library(skimr)
 library(dplyr)
+library(psych)
 ```
 
 ```{r}
@@ -104,17 +106,17 @@ master <- master %>%
       Utility_Sewer == "SEWER/SEPTIC AVAIL" ~ "1",
       Utility_Sewer == "SEWER/SEPTIC INSTALLED" ~"2",
       Utility_Sewer == "SEWER/SEPTIC NO" ~"0",
-      Utility_Sewer == "SEWER/SEPTIC NO PERC" ~"0",
+      Utility_Sewer == "SEWER/SEPTIC NO PERC" ~"0"
     ),
     Utility_Electric = case_when(
       Utility_Electric == "POWER AVAILABLE" ~ "1",
       Utility_Electric == "POWER INSTALLED" ~"2",
-      Utility_Electric == "POWER NO - COMMENT" ~"0",
+      Utility_Electric == "POWER NO - COMMENT" ~"0"
     ),
     Utility_Water = case_when(
     Utility_Water == "WATER AVAILABLE" ~ "1",
     Utility_Water == "WATER INSTALLED" ~"2",
-    Utility_Water == "WATER NO" ~"0",
+    Utility_Water == "WATER NO" ~"0"
     ),
     Utility_Sewer = as.factor(Utility_Sewer),
     Utility_Electric = as.factor(Utility_Electric),
@@ -129,15 +131,25 @@ master[is.na(master['Utility_Electric']),'Utility_Electric'] <- '2'
 ```{r}
 summary(master)
 ```
+### correlation 
 
 ```{r}
 
+categorical <- master %>%
+  select(Utility_Electric, Utility_Sewer, Utility_Water, View_Quality,Waterfront_Type, 
+         near_firestation, near_healthcare, near_libraries, near_policestation, near_waterplants,
+         near_schools, withInSewerImprovement, condition,  quality,attic_finished_square_feet,basement_square_feet,porch_square_feet,attached_garage_square_feet,detached_garage_square_feet)
+Numeric <- master %>%
+  select(Crime_Num,square_feet, fireplaces, stories, bedrooms, bathrooms,year_built, sale_price)
+```
+
+### 
+```{r}
+chisq.test(table(master$Utility_Electric,master$Utility_Sewer))
 ```
 
 ```{r}
 
-```
-
-```{r}
-
+cor(Numeric,use = "na.or.complete")
+pairs.panels(Numeric)
 ```
