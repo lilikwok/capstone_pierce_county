@@ -6,6 +6,14 @@ output: html_document
 ---
 
 ```{r}
+
+rm(list = ls(all = TRUE)) 
+
+# Clear environmet of packages
+if(is.null(sessionInfo()$otherPkgs) == FALSE)lapply(paste("package:", names(sessionInfo()$otherPkgs), sep=""), detach, character.only = TRUE, unload = TRUE)
+```
+
+```{r}
 library(tidyverse)
 library(skimr)
 library(dplyr)
@@ -17,7 +25,7 @@ improvement <- read_csv("full_improvement_update.csv")
 ```
 
 ```{r}
-master <- master %>% left_join(improvement, by = "Parcel_Number")
+master <- master %>% inner_join(improvement, by = "Parcel_Number")
 ```
 
 
@@ -60,16 +68,66 @@ master <- master %>%
 ```
 
 
+
 ```{r}
-test <- master %>% select(sale_price, year_built, Land_Net_Acres, square_feet, fireplaces, stories, bathrooms, bedrooms, condition, quality)
+master[!is.na(master['View_Quality']),'View_Quality'] <- 1
+master[is.na(master['View_Quality']),'View_Quality'] <- 0
+master[!is.na(master['Waterfront_Type']),'Waterfront_Type'] <- 1
+master[is.na(master['Waterfront_Type']),'Waterfront_Type'] <- 0
+master <- 
+  master %>%
+  mutate(
+    Utility_Sewer = as.factor(Utility_Sewer),
+    Utility_Water = as.factor(Utility_Water),
+    Utility_Electric = as.factor(Utility_Electric),
+    View_Quality= as.factor(View_Quality),
+    Waterfront_Type = as.factor(Waterfront_Type),
+    withInSewerImprovement = as.factor(withInSewerImprovement),
+    near_firestation = as.factor(near_firestation),
+    near_healthcare = as.factor(near_healthcare),
+    near_libraries = as.factor(near_libraries),
+    near_policestation = as.factor(near_policestation),
+    near_schools = as.factor(near_schools),
+    near_waterplants = as.factor(near_waterplants),
+    condition = as.factor(condition),
+    quality = as.factor(quality),
+    attic_finished_square_feet = as.factor(attic_finished_square_feet),
+    basement_square_feet = as.factor(basement_square_feet),
+    basement_finished_square_feet = as.factor(basement_finished_square_feet),
+    porch_square_feet = as.factor(porch_square_feet),
+    attached_garage_square_feet = as.factor(attached_garage_square_feet),
+    detached_garage_square_feet = as.factor(detached_garage_square_feet)
+  )
+master <- master %>%
+  mutate(
+      Utility_Sewer = case_when(
+      Utility_Sewer == "SEWER/SEPTIC AVAIL" ~ "1",
+      Utility_Sewer == "SEWER/SEPTIC INSTALLED" ~"2",
+      Utility_Sewer == "SEWER/SEPTIC NO" ~"0",
+      Utility_Sewer == "SEWER/SEPTIC NO PERC" ~"0",
+    ),
+    Utility_Electric = case_when(
+      Utility_Electric == "POWER AVAILABLE" ~ "1",
+      Utility_Electric == "POWER INSTALLED" ~"2",
+      Utility_Electric == "POWER NO - COMMENT" ~"0",
+    ),
+    Utility_Water = case_when(
+    Utility_Water == "WATER AVAILABLE" ~ "1",
+    Utility_Water == "WATER INSTALLED" ~"2",
+    Utility_Water == "WATER NO" ~"0",
+    ),
+    Utility_Sewer = as.factor(Utility_Sewer),
+    Utility_Electric = as.factor(Utility_Electric),
+    Utility_Water = as.factor(Utility_Water)
+  )
+master[is.na(master['Utility_Sewer']),'Utility_Sewer'] <- '2'
+master[is.na(master['Utility_Water']),'Utility_Water'] <- '2'
+master[is.na(master['Utility_Electric']),'Utility_Electric'] <- '2'
 ```
 
-```{r}
-
-```
 
 ```{r}
-
+summary(master)
 ```
 
 ```{r}
