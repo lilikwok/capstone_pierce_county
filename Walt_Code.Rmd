@@ -32,7 +32,10 @@ master <- master %>% inner_join(improvement, by = "Parcel_Number")
 
 
 ```{r}
-master <- master %>% filter(percent_complete >= 1.0)
+#Having an issues with this line of code, it is removing all incomplete buildings but alsoo 1 vs 1.0 so we are losing some
+# values, need to discuss what percent complete we should filter for (if any) as incomplete buildings can be sold during #construction process.  Curious what everyone thinks.  - Walt
+
+#master <- master %>% filter(percent_complete >= 1.0)
 ```
 
 ```{r}
