@@ -149,11 +149,36 @@ Numeric <- master %>%
 
 ### 
 ```{r}
-chisq.test(table(master$Utility_Electric,master$Utility_Sewer))
+chisq.test(table(master$View_Quality,master$Waterfront_Type))
 ```
+
+```{r}
+chisq.test(table(master$near_firestation,master$near_healthcare))
+chisq.test(table(master$near_policestation,master$near_waterplants))
+chisq.test(table(master$near_policestation,master$near_firestation))
+chisq.test(table(master$near_libraries,master$near_firestation))
+chisq.test(table(master$near_policestation,master$near_libraries))
+chisq.test(table(master$near_libraries,master$near_schools))
+chisq.test(table(master$porch_square_feet,master$basement_square_feet))
+chisq.test(table(master$condition,master$quality))
+chisq.test(table(master$attached_garage_square_feet,master$detached_garage_square_feet))
+```
+
+```{r fig.width= 10}
+pairs.panels(categorical)
+
+```
+
 
 ```{r}
 
 cor(Numeric,use = "na.or.complete")
 pairs.panels(Numeric)
 ```
+
+
+```{r}
+plot(bathrooms ~ square_feet, data = master)
+abline(lm(bathrooms ~ square_feet, data = master))
+```
+
