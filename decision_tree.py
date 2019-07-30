@@ -9,7 +9,7 @@ from sklearn.tree import export_graphviz
 from sklearn.metrics import mean_squared_error
 
 
-df = pd.read_csv("model.csv", sep=',', header=0)
+df = pd.read_csv("master_model.csv", sep=',', header=0)
 
 y = df['sale_price']
 print(df.dtypes)
@@ -49,7 +49,7 @@ X = df[['Land_Net_Acres','View_Quality',
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,random_state=109)  
 
 # create a regressor object 
-regressor = DecisionTreeRegressor(criterion='mse', splitter='best', max_depth=6, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, 
+regressor = DecisionTreeRegressor(criterion='mse', splitter='best', max_depth=7, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, 
 random_state=0, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, presort=False)
 
 # fit the regressor with X and Y data 
@@ -70,7 +70,7 @@ export_graphviz(regressor, out_file ='tree.dot',feature_names=X.columns)
 Important factor : square_feet, basement_finished_square_feet, quality, 
 Land_Net_Acres, year_built, bedrooms, bathrooms, 
 fireplaces, porch_square_feet, Waterfront_Type, Crime_Num, Waterfront_Type
-'''
+
 
 X1 = df[['Land_Net_Acres', 
        'Waterfront_Type', 'Crime_Num', 
@@ -94,3 +94,6 @@ print("MSE:",MSE1)
 # export the decision tree to a tree.dot file 
 # for visualizing the plot easily anywhere 
 export_graphviz(regressor, out_file ='tree1.dot',feature_names=X1.columns)  
+'''
+
+
