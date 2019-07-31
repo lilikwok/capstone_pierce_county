@@ -7,12 +7,14 @@ from sklearn.tree import DecisionTreeRegressor
 # import export_graphviz 
 from sklearn.tree import export_graphviz  
 from sklearn.metrics import mean_squared_error
-
-
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.datasets import make_regression
+#########################################################
+########## load data                             ########
+#########################################################
 df = pd.read_csv("master_model.csv", sep=',', header=0)
 
 y = df['sale_price']
-print(df.dtypes)
 df['View_Quality'] = df['View_Quality'] .astype('category')
 df['Waterfront_Type'] = df['Waterfront_Type'] .astype('category')
 df['withInSewerImprovement'] = df['withInSewerImprovement'] .astype('category')
@@ -32,7 +34,7 @@ df['attached_garage_square_feet'] = df['attached_garage_square_feet'] .astype('c
 df['detached_garage_square_feet'] = df['detached_garage_square_feet'] .astype('category')
 df['fireplaces'] = df['fireplaces'] .astype('category')
 df['Crime_Num'] = df['Crime_Num'].fillna(0)
-print(df.columns)
+
 
 X = df[['Land_Net_Acres','View_Quality', 
        'Waterfront_Type', 'Crime_Num', 'withInSewerImprovement',
@@ -44,8 +46,10 @@ X = df[['Land_Net_Acres','View_Quality',
        'detached_garage_square_feet', 'fireplaces', 'stories', 'bedrooms',
        'bathrooms', 'year_built']]
 
-
-
+###################################################
+###########  decison tree regression ##############
+###################################################
+'''
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,random_state=109)  
 
 # create a regressor object 
@@ -60,11 +64,21 @@ print("MSE:",MSE)
 # export the decision tree to a tree.dot file 
 # for visualizing the plot easily anywhere 
 export_graphviz(regressor, out_file ='tree.dot',feature_names=X.columns)  
+# MSE = 5649201394.374776
+'''
+regressor = DecisionTreeRegressor(criterion='mse', splitter='best', max_depth=7, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, 
+random_state=0, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, presort=False)
 
+# fit the regressor with X and Y data 
+reg = regressor.fit(X, y) 
+y_pred = reg.predict(X)  
+MSE = mean_squared_error(y, y_pred)
+print("MSE:",MSE)
+# export the decision tree to a tree.dot file 
+# for visualizing the plot easily anywhere 
+export_graphviz(reg, out_file ='tree.dot',feature_names=X.columns)  
 
-# REFRENCE: https://www.geeksforgeeks.org/python-decision-tree-regression-using-sklearn/
-# MSE:https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html
-
+#MSE: 4854304329.722403
 '''
  full model with tree_depth = 5 
 Important factor : square_feet, basement_finished_square_feet, quality, 
@@ -97,3 +111,28 @@ export_graphviz(regressor, out_file ='tree1.dot',feature_names=X1.columns)
 '''
 
 
+###############################################
+###### Random forest model              #######
+###############################################
+
+
+regr = RandomForestRegressor(bootstrap=True, criterion='mse', max_depth=7,
+           max_features='auto', max_leaf_nodes=None,
+           min_impurity_decrease=0.0, min_impurity_split=None,
+           min_samples_leaf=1, min_samples_split=2,
+           min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None,
+           oob_score=False, random_state=0, verbose=0, warm_start=False)
+
+
+rrtree = regr.fit(X, y)  
+y_pred = rrtree.predict(X)  
+MSE = mean_squared_error(y, y_pred)
+print("MSE of random forest:",MSE)
+# export the decision tree to a tree.dot file 
+# for visualizing the plot easily anywhere 
+
+export_graphviz(regr.estimators_[0], out_file='tree_from_forest1.dot',feature_names=X.columns)
+export_graphviz(regr.estimators_[1], out_file='tree_from_forest2.dot',feature_names=X.columns)
+export_graphviz(regr.estimators_[2], out_file='tree_from_forest3.dot',feature_names=X.columns)
+# REFRENCE: https://www.geeksforgeeks.org/python-decision-tree-regression-using-sklearn/
+# MSE:https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html
