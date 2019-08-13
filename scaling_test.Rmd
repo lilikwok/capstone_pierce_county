@@ -1,0 +1,57 @@
+---
+title: "Untitled"
+author: "Walt Ames"
+date: "8/6/2019"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(MASS)
+library(randomForest)
+library(MLmetrics)
+library(MASS)
+library(mclust)
+library(ClustMMDD)
+```
+
+```{r}
+m1_full <- read_csv("m1_full.csv")
+m2_full <- read_csv("m2_full.csv")
+```
+
+```{r}
+m1_scaled <- scale(m1_full)
+m2_scaled <- scale(m2_full)
+```
+
+```{r}
+km1 <- kmeans(m1_scaled, 3)
+km2 <- kmeans(m2_scaled, 3)
+km3 <- kmeans(m1_scaled, 5)
+km4 <- kmeans(m2_scaled, 5)
+```
+
+```{r}
+bt1 <- km1$betweenss/km1$totss
+
+bt1
+```
+
+```{r}
+bt2 <- km2$betweenss/km2$totss
+
+bt2
+```
+
+```{r}
+bt3 <- km3$betweenss/km3$totss
+
+bt3
+```
+
+```{r}
+bt4 <- km4$betweenss/km4$totss
+
+bt4
+```
