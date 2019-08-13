@@ -285,3 +285,99 @@ mape
 varImpPlot(rfm)
 importance(rfm)
 ```
+
+### Relationship between factors and house prices 
+
+```{r}
+ggplot(m1_full, aes(square_feet, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Square Feet and House Prices")
+```
+
+```{r warning= FALSE}
+m1_full %>%
+  filter(quality != '10') %>%
+ggplot( aes(quality, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic()+ scale_x_continuous(breaks=seq(1, 9, 1),labels=c('1'="Low", '2'="Low Plus", "3"="Fair", "4"="Fair Plus", "5"="Average", "6"="Average Plus","7"="Good","8"="Good Plus", '9' = "Very Good" )) + ggtitle("Posive Relationship between Quality and House Prices") 
+
+```
+
+```{r}
+ggplot(m1_full, aes(bathrooms, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Number of Bathrooms and House Prices") 
+```
+
+```{r}
+ggplot(m1_full, aes(bedrooms, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Number of Bedrooms and House Prices") 
+```
+
+```{r}
+ggplot(m1_full, aes(year_built, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Year Built and House Prices")  
+
+```
+
+```{r}
+ggplot(m1_full, aes(Crime_Num, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Negative Relationship between Crime Number and House Prices")  + xlab("Crime Number")
+
+```
+
+
+```{r}
+ggplot(m1_full, aes(attached_garage_square_feet, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Negative Relationship between Crime Number and House Prices")  
+
+```
+
+
+```{r}
+m1_full %>%
+  mutate(
+    near_college = 
+      case_when(
+        near_college == 1 ~ 'Yes',
+        near_college == 0 ~ 'No'
+      )
+  )%>%
+  group_by(near_college) %>%
+  summarise(`sales price` = mean(sale_price))%>%
+  ggplot(aes(near_college,`sales price`, fill = near_college)) + geom_bar(stat = 'identity') + scale_fill_brewer() + theme_classic() + ylab("sales price") + xlab("near college") +
+  ggtitle("The proximity to college has slight positive impact on housing prices") +geom_hline(aes(yintercept = 349005.4), color = 'red') 
+
+```
+
+```{r}
+m1_full %>%
+  mutate(
+    attached_garage = 
+      case_when(
+        attached_garage_square_feet == 1 ~ 'Yes',
+        attached_garage_square_feet == 0 ~ 'No'
+      )
+  )%>%
+  group_by(attached_garage) %>%
+  summarise(`sales price` = mean(sale_price))%>%
+  ggplot(aes(attached_garage,`sales price`, fill = attached_garage)) + geom_bar(stat = 'identity') + scale_fill_brewer() + theme_classic() + ylab("sales price") + xlab("attached garage") +
+  ggtitle("Attached garage has a positive impact on housing prices") +geom_hline(aes(yintercept = 293637.4), color = 'red') 
+
+```
+
+
+```{r}
+ggplot(m1_full, aes(fireplaces, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Fireplaces and House Prices")  
+
+```
+
+```{r}
+m1_full %>%
+  mutate(
+    basement_finished_square_feet = 
+      case_when(
+        basement_finished_square_feet == 1 ~ 'Yes',
+        basement_finished_square_feet == 0 ~ 'No'
+      )
+  )%>%
+  group_by(basement_finished_square_feet) %>%
+  summarise(`sales price` = mean(sale_price))%>%
+  ggplot(aes(basement_finished_square_feet,`sales price`, fill = basement_finished_square_feet)) + geom_bar(stat = 'identity') + scale_fill_brewer() + theme_classic() + ylab("sales price") + xlab("Basement") + ggtitle("Basement has a positive impact on housing prices") +geom_hline(aes(yintercept = 344681.7), color = 'red') +theme(legend.position = "none") 
+
+```
+
+```{r}
+ggplot(m1_full, aes(fireplaces, sale_price))+stat_smooth(se=TRUE, method='loess') + theme_classic() + ggtitle("Posive Relationship between Fireplaces and House Prices")  
+```
+
